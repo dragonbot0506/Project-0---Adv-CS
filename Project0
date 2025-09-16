@@ -1,0 +1,486 @@
+import random
+
+class Player:
+    def __init__(self, name):
+        self.name = name
+        self.energy = 50
+        self.happiness = 50
+        self.study_points = 0
+        self.social_points = 0
+        self.money = 30
+        self.stayed_up_late = False
+        self.ate_junk = 0
+    
+    def display_stats(self):
+        print(f"\n{self.name}'s Stats:")
+        print(f"Energy: {self.energy}")
+        print(f"Happiness: {self.happiness}")
+        print(f"Money: ${self.money}")
+        print("-" * 20)
+
+def get_name():
+    """Get and validate player name"""
+    while True:
+        name = input("What's your name? ").strip()
+        if name and len(name) <= 15:
+            return name
+        print("Please enter a valid name (1-15 characters)!")
+
+def get_choice(prompt, max_num):
+    """Get and validate player choice with recursive prompting"""
+    while True:
+        try:
+            choice = int(input(prompt))
+            if 1 <= choice <= max_num:
+                return choice
+            print(f"Please choose a number between 1 and {max_num}!")
+        except ValueError:
+            print("Please enter a valid number!")
+
+def decision_1_friday_after_school(player):
+    """Decision 1: Right after school ends"""
+    print(f"\nFRIDAY 3:30 PM")
+    print(f"School just ended! What does {player.name} do first?")
+    print("1. Go straight home")
+    print("2. Hang out with friends for a bit")
+    print("3. Stop by the library")
+    print("4. Get a snack from the vending machine")
+    
+    choice = get_choice(f"{player.name}, what's your move? (1-4): ", 4)
+    
+    if choice == 1:
+        print(f"\n{player.name} heads straight home to decompress.")
+        player.energy += 5
+        player.happiness += 3
+    elif choice == 2:
+        print(f"\n{player.name} chats with friends outside school.")
+        player.happiness += 8
+        player.social_points += 1
+    elif choice == 3:
+        print(f"\n{player.name} stops by the library to get a head start.")
+        player.study_points += 1
+        player.energy -= 5
+    else:
+        print(f"\n{player.name} grabs some chips and soda.")
+        player.happiness += 5
+        player.money -= 3
+        player.ate_junk += 1
+    
+    player.display_stats()
+
+def decision_2_friday_evening(player):
+    """Decision 2: Friday Evening Plans"""
+    print(f"\nFRIDAY 6:00 PM")
+    print(f"Dinner time! What are {player.name}'s evening plans?")
+    print("1. Study for Monday's test")
+    print("2. Video call friends")
+    print("3. Watch TV and relax")
+    print("4. Go out to eat somewhere")
+    
+    choice = get_choice(f"{player.name}, what sounds good? (1-4): ", 4)
+    
+    if choice == 1:
+        print(f"\n{player.name} spends the evening studying. Smart but tiring!")
+        player.energy -= 15
+        player.happiness -= 8
+        player.study_points += 2
+    elif choice == 2:
+        print(f"\n{player.name} has a fun video call with friends!")
+        player.happiness += 12
+        player.social_points += 1
+    elif choice == 3:
+        print(f"\n{player.name} enjoys a peaceful evening watching shows.")
+        player.energy += 8
+        player.happiness += 8
+    else:
+        print(f"\n{player.name} goes out for a nice dinner!")
+        player.happiness += 15
+        player.money -= 18
+    
+    player.display_stats()
+
+def decision_3_friday_night(player):
+    """Decision 3: Friday Night Late Decision"""
+    print(f"\nFRIDAY 10:00 PM")
+    print(f"It's getting late. What does {player.name} do?")
+    print("1. Go to bed early (responsible choice)")
+    print("2. Stay up late gaming/watching movies")
+    print("3. Text friends until late")
+    print("4. Do some light studying before bed")
+    
+    choice = get_choice(f"Late night decision for {player.name}? (1-4): ", 4)
+    
+    if choice == 1:
+        print(f"\n{player.name} goes to bed at 10:30 PM. So responsible!")
+        player.energy += 15
+        player.happiness += 5
+    elif choice == 2:
+        print(f"\n{player.name} stays up until 2 AM gaming/watching movies!")
+        player.happiness += 18
+        player.energy -= 20
+        player.stayed_up_late = True
+    elif choice == 3:
+        print(f"\n{player.name} texts friends until 1 AM!")
+        player.happiness += 15
+        player.social_points += 2
+        player.energy -= 15
+        player.stayed_up_late = True
+    else:
+        print(f"\n{player.name} does some studying before bed.")
+        player.study_points += 1
+        player.energy -= 8
+    
+    player.display_stats()
+
+def decision_4_saturday_morning(player):
+    """Decision 4: Saturday Morning (affected by Friday night)"""
+    print(f"\nSATURDAY 10:00 AM")
+    
+    if player.stayed_up_late:
+        print(f"{player.name} wakes up groggy from staying up late...")
+        print("1. Sleep in until 2 PM")
+        print("2. Force yourself to get up")
+        print("3. Get coffee to wake up")
+        print("4. Text friends but stay in bed")
+    else:
+        print(f"{player.name} wakes up feeling refreshed!")
+        print("1. Study at the library")
+        print("2. Meet friends for brunch")
+        print("3. Go for a morning jog")
+        print("4. Have a lazy morning in bed")
+    
+    choice = get_choice(f"What does {player.name} do? (1-4): ", 4)
+    
+    if player.stayed_up_late:
+        if choice == 1:
+            print(f"\n{player.name} sleeps until 2 PM. So much for the morning!")
+            player.energy += 25
+            player.happiness += 8
+        elif choice == 2:
+            print(f"\n{player.name} drags themselves out of bed feeling awful.")
+            player.energy -= 10
+            player.happiness -= 8
+        elif choice == 3:
+            print(f"\n{player.name} gets coffee but still feels sluggish.")
+            player.energy += 8
+            player.money -= 6
+        else:
+            print(f"\n{player.name} texts friends from bed.")
+            player.happiness += 5
+            player.social_points += 1
+    else:
+        if choice == 1:
+            print(f"\n{player.name} has a very productive study session!")
+            player.energy -= 15
+            player.study_points += 3
+        elif choice == 2:
+            print(f"\n{player.name} has an amazing brunch with friends!")
+            player.energy -= 5
+            player.happiness += 18
+            player.social_points += 2
+            player.money -= 15
+        elif choice == 3:
+            print(f"\n{player.name} feels energized after a good jog!")
+            player.energy += 10
+            player.happiness += 12
+        else:
+            print(f"\n{player.name} enjoys a relaxing lazy morning.")
+            player.energy += 12
+            player.happiness += 10
+    
+    player.display_stats()
+
+def decision_5_saturday_afternoon(player):
+    """Decision 5: Saturday Afternoon Activity"""
+    print(f"\nSATURDAY 3:00 PM")
+    print(f"Afternoon plans for {player.name}?")
+    print("1. Study more for Monday")
+    print("2. Hang out with friends")
+    print("3. Go shopping")
+    print("4. Take a nap")
+    print("5. Play sports/exercise")
+    
+    choice = get_choice(f"{player.name}'s afternoon choice? (1-5): ", 5)
+    
+    if choice == 1:
+        print(f"\n{player.name} puts in serious study time!")
+        player.energy -= 20
+        player.study_points += 3
+    elif choice == 2:
+        print(f"\n{player.name} has a blast hanging out with friends!")
+        player.happiness += 20
+        player.social_points += 2
+        player.energy -= 10
+    elif choice == 3:
+        print(f"\n{player.name} goes shopping and buys some cool stuff!")
+        player.happiness += 15
+        player.money -= 25
+    elif choice == 4:
+        print(f"\n{player.name} takes a refreshing afternoon nap.")
+        player.energy += 20
+        player.happiness += 8
+    else:
+        print(f"\n{player.name} gets active and plays sports!")
+        player.energy -= 8
+        player.happiness += 15
+    
+    player.display_stats()
+
+def decision_6_saturday_evening(player):
+    """Decision 6: Saturday Evening Plans"""
+    print(f"\nSATURDAY 7:00 PM")
+    print(f"Saturday evening options for {player.name}:")
+    
+    if player.money < 10:
+        print("You're running low on money...")
+        print("1. Study at home (free)")
+        print("2. Hang out at someone's house")
+        print("3. Watch movies at home")
+        print("4. Ask parents for money")
+    else:
+        print("1. Study more for Monday")
+        print("2. Go out with friends")
+        print("3. Order takeout and relax")
+        print("4. Go to a movie")
+    
+    choice = get_choice(f"What's {player.name}'s choice? (1-4): ", 4)
+    
+    if player.money < 10:
+        if choice == 1:
+            print(f"\n{player.name} studies at home since money's tight.")
+            player.energy -= 12
+            player.study_points += 2
+        elif choice == 2:
+            print(f"\n{player.name} hangs out without spending money.")
+            player.happiness += 12
+            player.social_points += 1
+        elif choice == 3:
+            print(f"\n{player.name} has a cozy movie night at home.")
+            player.energy += 8
+            player.happiness += 10
+        else:
+            print(f"\n{player.name} gets $25 from parents but gets a lecture about budgeting.")
+            player.money += 25
+            player.happiness -= 8
+    else:
+        if choice == 1:
+            print(f"\n{player.name} puts in more study time!")
+            player.energy -= 18
+            player.study_points += 3
+        elif choice == 2:
+            print(f"\n{player.name} has an epic night out with friends!")
+            player.energy -= 25
+            player.happiness += 25
+            player.social_points += 3
+            player.money -= 20
+        elif choice == 3:
+            print(f"\n{player.name} orders pizza and chills at home.")
+            player.happiness += 15
+            player.money -= 12
+            player.ate_junk += 1
+        else:
+            print(f"\n{player.name} enjoys a great movie!")
+            player.happiness += 18
+            player.money -= 15
+    
+    player.display_stats()
+
+def decision_7_sunday_morning(player):
+    """Decision 7: Sunday Morning Reality Check"""
+    print(f"\nSUNDAY 11:00 AM")
+    
+    if player.study_points == 0:
+        print(f"{player.name} realizes they haven't studied AT ALL this weekend...")
+        print("Your parents are asking about homework!")
+        print("1. Confess and study now")
+        print("2. Lie and say you studied")
+        print("3. Promise to study but watch TV instead")
+        print("4. Panic and study for 5 hours straight")
+    elif player.social_points >= 6:
+        print(f"{player.name} has been super social this weekend!")
+        print("Friends want to hang out again today.")
+        print("1. Hang out and ignore homework")
+        print("2. Study instead of socializing")
+        print("3. Quick hangout then study")
+        print("4. Group study session with friends")
+    else:
+        print(f"Regular Sunday morning for {player.name}.")
+        print("1. Study to prepare for Monday")
+        print("2. Have a lazy Sunday")
+        print("3. Hang out with friends")
+        print("4. Do chores and get organized")
+    
+    choice = get_choice(f"Sunday decision for {player.name}? (1-4): ", 4)
+    
+    if player.study_points == 0:
+        if choice == 1:
+            print(f"\n{player.name} confesses and studies for 4 hours. Parents appreciate the honesty!")
+            player.study_points += 4
+            player.energy -= 25
+            player.happiness -= 5
+        elif choice == 2:
+            print(f"\n{player.name} lies but feels terrible about it.")
+            player.happiness -= 20
+        elif choice == 3:
+            print(f"\n{player.name} promises to study but procrastinates.")
+            player.happiness += 8
+        else:
+            print(f"\n{player.name} panic studies and gets completely exhausted!")
+            player.study_points += 5
+            player.energy -= 35
+            player.happiness -= 15
+    elif player.social_points >= 6:
+        if choice == 1:
+            print(f"\n{player.name} chooses friends over responsibility!")
+            player.social_points += 2
+            player.happiness += 15
+        elif choice == 2:
+            print(f"\n{player.name} disappoints friends but hits the books.")
+            player.study_points += 3
+            player.happiness -= 10
+        elif choice == 3:
+            print(f"\n{player.name} manages to balance both!")
+            player.social_points += 1
+            player.study_points += 2
+            player.happiness += 8
+        else:
+            print(f"\n{player.name} makes studying fun with friends!")
+            player.social_points += 2
+            player.study_points += 3
+            player.happiness += 12
+    else:
+        if choice == 1:
+            print(f"\n{player.name} ends the weekend productively!")
+            player.study_points += 3
+            player.energy -= 15
+        elif choice == 2:
+            print(f"\n{player.name} enjoys the last lazy moments of weekend.")
+            player.happiness += 15
+            player.energy += 10
+        elif choice == 3:
+            print(f"\n{player.name} has one last fun hangout!")
+            player.social_points += 2
+            player.happiness += 15
+        else:
+            print(f"\n{player.name} gets organized for a productive week!")
+            player.energy += 8
+            player.happiness += 10
+    
+    player.display_stats()
+
+def decision_8_sunday_evening(player):
+    """Decision 8: Final Sunday Evening Decision"""
+    print(f"\nSUNDAY 6:00 PM")
+    print(f"Last few hours of the weekend for {player.name}!")
+    print("How do you want to end it?")
+    print("1. Last-minute cramming for Monday")
+    print("2. Call/text friends to recap the weekend")
+    print("3. Go to bed super early")
+    print("4. Watch TV and try not to think about Monday")
+    print("5. Prep clothes and stuff for Monday")
+    
+    choice = get_choice(f"Final weekend decision for {player.name}? (1-5): ", 5)
+    
+    if choice == 1:
+        print(f"\n{player.name} does some last-minute studying!")
+        player.study_points += 2
+        player.energy -= 15
+    elif choice == 2:
+        print(f"\n{player.name} calls friends to talk about the amazing weekend!")
+        player.happiness += 12
+        player.social_points += 1
+    elif choice == 3:
+        print(f"\n{player.name} goes to bed at 7 PM to prepare for Monday!")
+        player.energy += 20
+        player.happiness += 5
+    elif choice == 4:
+        print(f"\n{player.name} watches TV and tries to ignore Monday anxiety.")
+        player.happiness += 8
+    else:
+        print(f"\n{player.name} gets super organized for the week ahead!")
+        player.happiness += 10
+        player.energy += 5
+    
+    player.display_stats()
+
+def get_ending(player):
+    """Determine ending based on player choices"""
+    if player.study_points >= 10:
+        return "STUDY MASTER", f"{player.name} is incredibly prepared for Monday! Academic success awaits."
+    elif player.social_points >= 8:
+        return "SOCIAL LEGEND", f"{player.name} had an epic social weekend! Everyone wants to be your friend."
+    elif player.money <= 0:
+        return "COMPLETELY BROKE", f"{player.name} spent everything! Time to ask parents for a bigger allowance."
+    elif player.energy <= 15:
+        return "TOTALLY EXHAUSTED", f"{player.name} is running on empty. Monday will be a struggle!"
+    elif player.happiness >= 80:
+        return "PURE HAPPINESS", f"{player.name} had the most amazing weekend ever!"
+    elif player.study_points == 0:
+        return "HOMEWORK DISASTER", f"{player.name} didn't study at all. Monday's test will be... interesting."
+    elif player.ate_junk >= 2:
+        return "JUNK FOOD WEEKEND", f"{player.name} lived on snacks and takeout. Maybe eat some vegetables Monday?"
+    elif player.stayed_up_late and player.energy < 30:
+        return "SLEEP DEPRIVED", f"{player.name} stayed up too late and now regrets it!"
+    else:
+        return "BALANCED WEEKEND", f"{player.name} had a pretty normal, well-balanced weekend!"
+
+def play_game():
+    """Main game function"""
+    print("ULTIMATE WEEKEND ADVENTURE SIMULATOR")
+    print("Make 8 important decisions that will shape your entire weekend!")
+    print("Every choice matters and leads to different outcomes.\n")
+    
+    
+    player = Player(get_name())
+    print(f"\nHi {player.name}! Let's see how your weekend adventure unfolds...")
+    player.display_stats()
+    
+  
+    decision_1_friday_after_school(player)
+    decision_2_friday_evening(player)
+    decision_3_friday_night(player)
+    decision_4_saturday_morning(player)
+    decision_5_saturday_afternoon(player)
+    decision_6_saturday_evening(player)
+    decision_7_sunday_morning(player)
+    decision_8_sunday_evening(player)
+    
+
+    print(f"\n" + "="*50)
+    print("WEEKEND ADVENTURE COMPLETE!")
+    print("="*50)
+    
+    ending_type, ending_desc = get_ending(player)
+    print(f"\n{ending_type}")
+    print(ending_desc)
+    
+    print(f"\nFinal Stats for {player.name}:")
+    print(f"Study Points: {player.study_points}")
+    print(f"Social Points: {player.social_points}")
+    print(f"Energy: {player.energy}")
+    print(f"Happiness: {player.happiness}")
+    print(f"Money Left: ${player.money}")
+    if player.stayed_up_late:
+        print("Stayed up late: YES (affected Saturday)")
+    if player.ate_junk > 0:
+        print(f"Junk food consumed: {player.ate_junk} times")
+
+def main():
+    """Main function with replay option"""
+    while True:
+        play_game()
+        
+     
+        while True:
+            again = input("\nWant to try a different weekend? (y/n): ").lower().strip()
+            if again in ['y', 'yes']:
+                print("\nStarting a brand new weekend adventure...\n")
+                break
+            elif again in ['n', 'no']:
+                print("Thanks for playing the Ultimate Weekend Simulator!")
+                return
+            else:
+                print("Please enter 'y' or 'n'!")
+
+if __name__ == "__main__":
+    main()
