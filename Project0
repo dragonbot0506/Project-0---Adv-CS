@@ -1,5 +1,6 @@
 import random
 
+#blueprint that creates a new player when the game starts. Every time someone plays, it sets up their character with starting values
 class Player:
     def __init__(self, name):
         self.name = name
@@ -10,7 +11,7 @@ class Player:
         self.money = 30
         self.stayed_up_late = False
         self.ate_junk = 0
-    
+#When a player enters their name, this function creates their character with default stats - 50 energy, 50 happiness, $30, and zero points for studying and socializing. It's like starting a video game character at level 1.
     def display_stats(self):
         print(f"\n{self.name}'s Stats:")
         print(f"Energy: {self.energy}")
@@ -27,7 +28,8 @@ def get_name():
         print("Please enter a valid name (1-15 characters)!")
 
 def get_choice(prompt, max_num):
-    """Get and validate player choice with recursive prompting"""
+#Get and validate player choice with recursive prompting
+#function for handling user input. It makes sure players can only enter valid choices
     while True:
         try:
             choice = int(input(prompt))
@@ -36,7 +38,15 @@ def get_choice(prompt, max_num):
             print(f"Please choose a number between 1 and {max_num}!")
         except ValueError:
             print("Please enter a valid number!")
+            
+            
 
+#First, we set the scene with the time and situation
+#We present exactly 4 options to the player
+#We use our function to get valid input from 1-4
+#Then we use if/elif statements to handle each possible choice
+#Each choice changes the player's stats differently - going home increases energy and happiness
+#Notice how we use player.energy += 5 to modify the player's stats directly
 def decision_1_friday_after_school(player):
     """Decision 1: Right after school ends"""
     print(f"\nFRIDAY 3:30 PM")
@@ -131,7 +141,7 @@ def decision_3_friday_night(player):
         player.energy -= 8
     
     player.display_stats()
-
+#This pattern repeats for all 8 decisions - present choices, get valid input, modify stats based on the choice. But later decisions change based on what happened earlier, like if you stayed up late Friday night, Saturday morning has different options.
 def decision_4_saturday_morning(player):
     """Decision 4: Saturday Morning (affected by Friday night)"""
     print(f"\nSATURDAY 10:00 AM")
@@ -402,9 +412,14 @@ def decision_8_sunday_evening(player):
         player.energy += 5
     
     player.display_stats()
-
+#This following function determines which of 9 different endings the player gets based on their accumulated stats throughout the weekend.
 def get_ending(player):
     """Determine ending based on player choices"""
+#This uses a chain of if/elif statements that check the player's stats in priority order
+#The function returns TWO things: a title and a description
+#It checks the most extreme conditions first (like STUDY MASTER) then works down to less specific ones
+#The else: at the end is the default - if none of the special conditions are met, you get BALANCED WEEKEND
+#Some endings combine multiple conditions, like player.stayed_up_late and player.energy < 30 for SLEEP DEPRIVED
     if player.study_points >= 10:
         return "STUDY MASTER", f"{player.name} is incredibly prepared for Monday! Academic success awaits."
     elif player.social_points >= 8:
